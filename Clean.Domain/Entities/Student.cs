@@ -11,4 +11,6 @@ public class Student
     public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
     public ICollection<StudentIssue> StudentIssues { get; set; } = new List<StudentIssue>();
     public ICollection<ExamResult> ExamResults { get; set; } = new List<ExamResult>();
+    
+    public ICollection<StudentGroupMember> Groups { get; set; } = new List<StudentGroupMember>();
 }

@@ -8,4 +8,6 @@ public class Subject
 
     public ICollection<Timetable> Timetables { get; set; } = new List<Timetable>();
     public ICollection<Exam> Exams { get; set; } = new List<Exam>();
+
+    public ICollection<Lesson> Lessons { get; set; }
 }

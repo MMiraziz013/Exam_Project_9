@@ -7,6 +7,9 @@ namespace Clean.Application.Abstractions;
 
 public interface IStudentRepository
 {
-    public Task<Student> GetStudentByIdAsync(string id);
-    public Task<Student> AssignClasses(string id, List<string> courseids);
+    Task<IEnumerable<Student>> GetAllAsync();
+    Task<Student>? GetStudentByIdAsync(string id);
+    Task<bool> AddAsync(Student student);
+    Task<bool> UpdateAsync(Student student);
+    Task<bool> DeleteAsync(string id);
 }

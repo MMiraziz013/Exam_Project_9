@@ -15,7 +15,17 @@ public static class DependencyInjection
         services.AddScoped<IDataContext>(provider => provider.GetRequiredService<DataContext>());
 
         services.AddTransient<IStudentRepository, StudentRepository>();
-
+        services.AddTransient<ITeacherRepository, TeacherRepository>();
+        services.AddTransient<IClassroomRepository, ClassroomRepository>();
+        services.AddTransient<IAttendanceRepository, AttendanceRepository>();
+        services.AddTransient<ISubjectRepository, SubjectRepository>();
+        services.AddTransient<IStudentGroupRepository, StudentGroupRepository>();
+        services.AddTransient<IStudentGroupMemberRepository, StudentGroupMemberRepository>();
+        services.AddTransient<IExamRepository, ExamRepository>();
+        services.AddTransient<IExamResultRepository, ExamResultRepository>();
+        services.AddTransient<ITimetableRepository, TimetableRepository>();
+        services.AddTransient<IStudentIssueRepository, StudentIssueRepository>();
+        services.AddTransient<ILessonRepository, LessonRepository>();
         return services;
     }
 }

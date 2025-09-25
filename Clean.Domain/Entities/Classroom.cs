@@ -8,4 +8,6 @@ public class Classroom
 
     public ICollection<Attendance> Attendances { get; set; } = new List<Attendance>();
     public ICollection<Timetable> Timetables { get; set; } = new List<Timetable>();
+
+    public ICollection<Lesson> Lessons { get; set; }
 }

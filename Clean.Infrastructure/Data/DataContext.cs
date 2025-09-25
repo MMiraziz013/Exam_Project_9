@@ -27,6 +27,9 @@ public class DataContext : DbContext, IDataContext
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Teacher> Teachers { get; set; }
     public DbSet<Timetable> Timetables { get; set; }
+    public DbSet<Lesson> Lessons { get; set; }
+    public DbSet<StudentGroup> StudentGroups { get; set; }
+    public DbSet<StudentGroupMember> StudentGroupMembers { get; set; }
 
     public async Task MigrateAsync()
     {
@@ -45,5 +48,6 @@ public class DataContext : DbContext, IDataContext
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(SubjectConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(TeacherConfiguration).Assembly);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(TimetableConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(LessonConfiguration).Assembly);
     }
 }

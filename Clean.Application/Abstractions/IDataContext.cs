@@ -15,6 +15,7 @@ public interface IDataContext
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Teacher> Teachers { get; set; }
     public DbSet<Timetable> Timetables { get; set; }
+    public DbSet<Lesson> Lessons { get; set; }
     Task<int> SaveChangesAsync(CancellationToken ct = default);
     Task MigrateAsync();
 }

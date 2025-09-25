@@ -28,11 +28,11 @@ namespace Clean.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("ClassroomId")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("LessonId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -45,6 +45,10 @@ namespace Clean.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("AttendanceId");
+
+                    b.HasIndex("ClassroomId");
+
+                    b.HasIndex("LessonId");
 
                     b.HasIndex("StudentId");
 
@@ -121,6 +125,35 @@ namespace Clean.Infrastructure.Migrations
                     b.ToTable("exam_results", (string)null);
                 });
 
+            modelBuilder.Entity("Clean.Domain.Entities.Lesson", b =>
+                {
+                    b.Property<string>("LessonId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClassroomId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LessonDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SubjectId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TimetableId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("LessonId");
+
+                    b.HasIndex("ClassroomId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.HasIndex("TimetableId");
+
+                    b.ToTable("Lessons");
+                });
+
             modelBuilder.Entity("Clean.Domain.Entities.Student", b =>
                 {
                     b.Property<string>("StudentId")
@@ -147,6 +180,42 @@ namespace Clean.Infrastructure.Migrations
                     b.HasKey("StudentId");
 
                     b.ToTable("students", (string)null);
+                });
+
+            modelBuilder.Entity("Clean.Domain.Entities.StudentGroup", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StudentGroups");
+                });
+
+            modelBuilder.Entity("Clean.Domain.Entities.StudentGroupMember", b =>
+                {
+                    b.Property<string>("StudentId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GroupId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("DateJoined")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MembershipId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("StudentId", "GroupId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("StudentGroupMembers");
                 });
 
             modelBuilder.Entity("Clean.Domain.Entities.StudentIssue", b =>
@@ -229,6 +298,10 @@ namespace Clean.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("StudentGroupId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("SubjectId")
                         .IsRequired()
                         .HasColumnType("text");
@@ -246,6 +319,8 @@ namespace Clean.Infrastructure.Migrations
 
                     b.HasIndex("ClassroomId");
 
+                    b.HasIndex("StudentGroupId");
+
                     b.HasIndex("SubjectId");
 
                     b.HasIndex("TeacherId");
@@ -255,9 +330,13 @@ namespace Clean.Infrastructure.Migrations
 
             modelBuilder.Entity("Clean.Domain.Entities.Attendance", b =>
                 {
-                    b.HasOne("Clean.Domain.Entities.Classroom", "Classroom")
+                    b.HasOne("Clean.Domain.Entities.Classroom", null)
                         .WithMany("Attendances")
-                        .HasForeignKey("AttendanceId")
+                        .HasForeignKey("ClassroomId");
+
+                    b.HasOne("Clean.Domain.Entities.Lesson", "Lesson")
+                        .WithMany("Attendances")
+                        .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -267,7 +346,7 @@ namespace Clean.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Classroom");
+                    b.Navigation("Lesson");
 
                     b.Navigation("Student");
                 });
@@ -302,6 +381,44 @@ namespace Clean.Infrastructure.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("Clean.Domain.Entities.Lesson", b =>
+                {
+                    b.HasOne("Clean.Domain.Entities.Classroom", null)
+                        .WithMany("Lessons")
+                        .HasForeignKey("ClassroomId");
+
+                    b.HasOne("Clean.Domain.Entities.Subject", null)
+                        .WithMany("Lessons")
+                        .HasForeignKey("SubjectId");
+
+                    b.HasOne("Clean.Domain.Entities.Timetable", "Timetable")
+                        .WithMany()
+                        .HasForeignKey("TimetableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Timetable");
+                });
+
+            modelBuilder.Entity("Clean.Domain.Entities.StudentGroupMember", b =>
+                {
+                    b.HasOne("Clean.Domain.Entities.StudentGroup", "Group")
+                        .WithMany("Members")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Clean.Domain.Entities.Student", "Student")
+                        .WithMany("Groups")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Student");
+                });
+
             modelBuilder.Entity("Clean.Domain.Entities.StudentIssue", b =>
                 {
                     b.HasOne("Clean.Domain.Entities.Student", "Student")
@@ -321,6 +438,12 @@ namespace Clean.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Clean.Domain.Entities.StudentGroup", "StudentGroup")
+                        .WithMany()
+                        .HasForeignKey("StudentGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Clean.Domain.Entities.Subject", "Subject")
                         .WithMany("Timetables")
                         .HasForeignKey("SubjectId")
@@ -335,6 +458,8 @@ namespace Clean.Infrastructure.Migrations
 
                     b.Navigation("Classroom");
 
+                    b.Navigation("StudentGroup");
+
                     b.Navigation("Subject");
 
                     b.Navigation("Teacher");
@@ -344,6 +469,8 @@ namespace Clean.Infrastructure.Migrations
                 {
                     b.Navigation("Attendances");
 
+                    b.Navigation("Lessons");
+
                     b.Navigation("Timetables");
                 });
 
@@ -352,18 +479,32 @@ namespace Clean.Infrastructure.Migrations
                     b.Navigation("ExamResults");
                 });
 
+            modelBuilder.Entity("Clean.Domain.Entities.Lesson", b =>
+                {
+                    b.Navigation("Attendances");
+                });
+
             modelBuilder.Entity("Clean.Domain.Entities.Student", b =>
                 {
                     b.Navigation("Attendances");
 
                     b.Navigation("ExamResults");
 
+                    b.Navigation("Groups");
+
                     b.Navigation("StudentIssues");
+                });
+
+            modelBuilder.Entity("Clean.Domain.Entities.StudentGroup", b =>
+                {
+                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("Clean.Domain.Entities.Subject", b =>
                 {
                     b.Navigation("Exams");
+
+                    b.Navigation("Lessons");
 
                     b.Navigation("Timetables");
                 });

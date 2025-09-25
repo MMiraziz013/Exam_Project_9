@@ -11,14 +11,12 @@ public class AttendanceConfiguration : IEntityTypeConfiguration<Attendance>
         builder.ToTable("attendance");
         builder.HasKey(a => a.AttendanceId);
         builder.Property(a => a.Status).IsRequired().HasDefaultValue("Absent");
-        builder.Property(a => a.Date).IsRequired();
-        builder.HasOne(c => c.Classroom);
         
         builder.HasOne(s => s.Student)
             .WithMany(s=> s.Attendances)
             .HasForeignKey(s=>s.StudentId);
-        builder.HasOne(a => a.Classroom)
+        builder.HasOne(a => a.Lesson)
             .WithMany(c => c.Attendances)
-            .HasForeignKey(a => a.ClassroomId);
+            .HasForeignKey(a => a.LessonId);
     }
 }
